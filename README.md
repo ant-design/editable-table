@@ -1,6 +1,6 @@
-# @umi-material/EditableTable
+# [antd-editabletable](https://www.npmjs.com/package/antd-editabletable)
 
-基于antd的高性能可编辑表单
+基于antd4.x的高性能可编辑表单（200个表单元素内性能没有太大问题，超过200个表单的界面建议改交互方式），自由的配置table每一个单元格的表单类型，并且支持自定义校验表单。antd3.x版本的暂时不支持。
 
 ## Install
 ```shell
@@ -136,6 +136,7 @@ npm i -S antd-editabletable
 ```
 2. 通过dataSource控制表单元素（用于每一列和每一行为不同表单类型）
 ```jsx
+import EditableTable from 'antd-editabletable';
 const getConfig = (formItemType) => {
        const map = {
          RADIO: {
@@ -267,6 +268,32 @@ const getConfig = (formItemType) => {
         }}
     />
     )
+```
+
+3. 表单校验
+```jsx
+  import { Button } from 'antd';
+  import { some } from 'lodash-es';
+  const validateFns = [];
+  const handleSubmit=()=>{};
+  return (<>
+    <EditableTable getValidateFieldsMethod={(validateFn)=>{
+      validateFns.push(validateFn);
+    }} />
+     <Button
+          type="primary"
+          onClick={async () => {
+            const result = await Promise.all(this.validateRules.map(v => v()));
+            if(some(result)){
+              console.log('has some error');
+              return;
+            }
+            handleSubmit();
+          }}
+        >
+          校验表单
+      </Button>
+  </>)
 ```
 
 ## LICENSE
