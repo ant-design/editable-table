@@ -14,6 +14,8 @@
   },
   "scripts": {
     "dev": "father doc dev",
+    "docBuild": "father doc build",
+    "docDeploy": "father doc deploy",
     "build": "father build"
   },
   "peerDependencies": {
