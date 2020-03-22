@@ -2,9 +2,15 @@
 
 基于antd的高性能可编辑表单
 
+## Install
+```shell
+npm i -S antd-editabletable
+```
+
 ## Usage
 1. 通过columns控制表单元素（用于每一列为同一种表单类型）
 ```jsx
+    import EditableTable from 'antd-editabletable';
     const getConfig = (formItemType) => {
        const map = {
          RADIO: {

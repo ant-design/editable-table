@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import EditableTable from 'editabletable';
+import EditableTable from 'antd-editabletable';
 import styles from './index.less';
 
 class TestPage extends Component {
