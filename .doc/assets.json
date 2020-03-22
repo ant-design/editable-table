@@ -1,8 +1,8 @@
 {
-  "vendors.css": "/static/css/vendors.5461c38508bf7c184f99.css",
-  "vendors.js": "/static/js/vendors.9b4211cf.js",
-  "app.js": "/static/js/app.5461c38508bf7c184f99.js",
-  "src-index.css": "/static/css/src-index.5461c38508bf7c184f99.css",
-  "src-index.js": "/static/js/src-index.d07f8e4a.js",
-  "index.html": "/index.html"
+  "vendors.css": "https://lth707.github.io/EditableTable/static/css/vendors.373cc52f3941ca2edca2.css",
+  "vendors.js": "https://lth707.github.io/EditableTable/static/js/vendors.741e20d2.js",
+  "app.js": "https://lth707.github.io/EditableTable/static/js/app.373cc52f3941ca2edca2.js",
+  "src-index.css": "https://lth707.github.io/EditableTable/static/css/src-index.373cc52f3941ca2edca2.css",
+  "src-index.js": "https://lth707.github.io/EditableTable/static/js/src-index.d07f8e4a.js",
+  "index.html": "https://lth707.github.io/EditableTable/index.html"
 }
