@@ -1,5 +1,5 @@
 {
-  "name": "editabletable",
+  "name": "antd-editabletable",
   "version": "0.0.1",
   "description": "基于antd的高性能可编辑表单",
   "main": "dist/index.js",
