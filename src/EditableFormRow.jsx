@@ -4,30 +4,33 @@ import { Form } from 'antd';
 import { ROW_SELECTION, CLASSNAME_PREFIX } from './constant';
 import classnames from '../common/classnames';
 import styles from './EditableTable.less';
-import EditableContext from './EditableContext';
 
 const cx = classnames(styles, CLASSNAME_PREFIX);
 
 const EditableRow = ({
-  form,
   record,
   myRowKey,
   index,
   validateFieldFns,
   changeFields,
   className,
+  children,
+  onChange,
+  columns,
   ...props
 }) => {
   const rowKeyStr = `${myRowKey ? myRowKey(record, index) || index : index}`;
+  const [form] = Form.useForm();
   useEffect(() => {
-    validateFieldFns.push(() => {
-      let validateStatus = false;
-      form.validateFieldsAndScroll(undefined, { force: true }, err => {
-        if (err) {
-          validateStatus = true;
+    validateFieldFns.push(async () => {
+      try {
+        await form.validateFields();
+        return false;
+      } catch (error) {
+        if (error) {
+          return true;
         }
-      });
-      return validateStatus;
+      }
     });
     return () => {
       // eslint-disable-next-line no-param-reassign
@@ -35,14 +38,78 @@ const EditableRow = ({
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  const trKey = myRowKey ? myRowKey(record, index) || index : index;
+  const fields = [];
+  const columMap = columns.reduce((reuslt, current) => {
+    return { ...reuslt, [current.dataIndex]: current };
+  }, {});
+  Object.keys(record || {}).forEach(key => {
+    if (key === ROW_SELECTION) return;
+    const column = columMap[key];
+    if (!column || column.render) {
+      return;
+    }
+    const hasValue =
+      record[key] && typeof record[key] === 'object' && 'value' in (record[key] || {});
+    if (hasValue && record[key] && record[key].render) {
+      return;
+    }
+    fields.push({
+      ...(changeFields[trKey] || {})[key],
+      name: key,
+      value: hasValue ? record[key].value : record[key],
+    });
+  });
   return (
-    <EditableContext.Provider value={form}>
-      <tr {...props} key={rowKeyStr} className={cx('edit-row', className || '')} />
-    </EditableContext.Provider>
+    <tr key={rowKeyStr} className={cx('edit-row', className || '')}>
+      <Form
+        form={form}
+        scrollToFirstError
+        component={false}
+        fields={fields}
+        onValuesChange={(changedValues, allValues) => {
+          const key = Object.keys(changedValues)[0];
+          const value = changedValues[key];
+          const column = columns.find(c => c.dataIndex === key) || {};
+          const hasValue =
+            record[key] && typeof record[key] === 'object' && 'value' in (record[key] || {});
+          if (hasValue) {
+            const newRecord = { ...record };
+            if (!newRecord[key]) {
+              newRecord[key] = {};
+            }
+            newRecord[key].value = value;
+            onChange(
+              key,
+              value,
+              newRecord,
+              newRecord[key].formItemType || column.formItemType || 'INPUT',
+            );
+          } else {
+            onChange(
+              key,
+              value,
+              Object.assign({}, record, allValues),
+              column.formItemType || 'INPUT',
+            );
+          }
+        }}
+        onFieldsChange={(props, _changeFields) => {
+          const key = myRowKey ? myRowKey(record, index) || index : index;
+          Object.assign(changeFields, {
+            [key]: {
+              ...changeFields[key],
+              ..._changeFields,
+            },
+          });
+        }}
+      >
+        {children}
+      </Form>
+    </tr>
   );
 };
 EditableRow.propTypes = {
-  form: PropTypes.shape({ validateFieldsAndScroll: PropTypes.func }),
   validateFieldFns: PropTypes.arrayOf(PropTypes.func),
   record: PropTypes.shape({}),
   index: PropTypes.number,
@@ -51,70 +118,4 @@ EditableRow.propTypes = {
   changeFields: PropTypes.shape({}),
 };
 
-const EditableFormRow = Form.create({
-  mapPropsToFields(props) {
-    const { record, columns, changeFields, myRowKey, index } = props;
-    const trKey = myRowKey ? myRowKey(record, index) || index : index;
-    const fields = {};
-    const columMap = columns.reduce((reuslt, current) => {
-      return { ...reuslt, [current.dataIndex]: current };
-    }, {});
-    Object.keys(record || {}).forEach(key => {
-      if (key === ROW_SELECTION) return;
-      const column = columMap[key];
-      if (!column || column.render) {
-        return;
-      }
-      const hasValue =
-        record[key] && typeof record[key] === 'object' && 'value' in (record[key] || {});
-      if (hasValue && record[key] && record[key].render) {
-        return;
-      }
-      fields[key] = Form.createFormField({
-        ...(changeFields[trKey] || {})[key],
-        value: hasValue ? record[key].value : record[key],
-      });
-    });
-    return fields;
-  },
-  onValuesChange(props, changedValues, allValues) {
-    const { onChange, record, columns } = props;
-    const key = Object.keys(changedValues)[0];
-    const value = changedValues[key];
-    const column = columns.find(c => c.dataIndex === key) || {};
-    const hasValue =
-      record[key] && typeof record[key] === 'object' && 'value' in (record[key] || {});
-    if (hasValue) {
-      const newRecord = { ...record };
-      if (!newRecord[key]) {
-        newRecord[key] = {};
-      }
-      newRecord[key].value = value;
-      onChange(
-        key,
-        value,
-        newRecord,
-        newRecord[key].formItemType || column.formItemType || 'INPUT',
-      );
-    } else {
-      onChange(
-        key,
-        value,
-        Object.assign({}, record, allValues),
-        column.formItemType || 'INPUT',
-      );
-    }
-  },
-  onFieldsChange(props, _changeFields) {
-    const { myRowKey, record, index, changeFields } = props;
-    const key = myRowKey ? myRowKey(record, index) || index : index;
-    Object.assign(changeFields, {
-      [key]: {
-        ...changeFields[key],
-        ..._changeFields,
-      },
-    });
-  },
-})(EditableRow);
-
-export default EditableFormRow;
+export default EditableRow;

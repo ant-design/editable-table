@@ -1,7 +1,8 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Table, Checkbox, Button, Icon } from 'antd';
+import { Table, Checkbox, Button } from 'antd';
+import { PlusOutlined } from '@ant-design/icons';
 import { debounce } from 'lodash-es';
 import classnames from '../common/classnames';
 import { ROW_SELECTION, CLASSNAME_PREFIX } from './constant';
@@ -148,7 +149,6 @@ class EditableTable extends Component {
               const target = newDataSource[index];
               Object.assign(target, newRecord);
               if (typeof key === 'string') {
-                console.log(formItemType);
                 if (['INPUT', 'TEXTAREA'].includes(formItemType)) {
                   this.debounceChange(
                     key,
@@ -183,7 +183,7 @@ class EditableTable extends Component {
                   role="button"
                   className={cx('btn-wrap', `:${addBtnClassName || ''}`)}
                 >
-                  <Icon type="plus" className={cx('plus-btn-icon')} />
+                  <PlusOutlined className={cx('plus-btn-icon')} />
                   <Button type="link" className={cx('plus-btn')}>
                     {addText}
                   </Button>

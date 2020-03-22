@@ -7,7 +7,6 @@ import findCascaderPath from '../common/findCascaderPath';
 import classnames from '../common/classnames';
 import FormItemType from './FormItemType';
 import { ROW_SELECTION, CLASSNAME_PREFIX } from './constant';
-import EditableContext from './EditableContext';
 import styles from './EditableTable.less';
 
 const cx = classnames(styles, CLASSNAME_PREFIX);
@@ -73,7 +72,7 @@ export default class EditableCell extends Component {
     return value;
   };
 
-  renderCell = ({ getFieldDecorator }) => {
+  renderCell = () => {
     const {
       dataIndex,
       record,
@@ -171,7 +170,7 @@ export default class EditableCell extends Component {
     const formItemType = recordType || columnType || 'INPUT';
     const ops = recordOptions || options;
     return (
-      <td key={`td-${cellKey}`} {...restProps}>
+      <td key={`td-${cellKey}`}>
         <div
           className={
             typeof cellClassName === 'function'
@@ -183,29 +182,32 @@ export default class EditableCell extends Component {
           {renderFn ? (
             renderFn(record[dataIndex], record, index)
           ) : (
-            <Form.Item style={{ margin: 0 }} key={`form-item-${cellKey}`}>
-              {lReadonly
-                ? this.renderName(
-                    record[dataIndex] && 'value' in record[dataIndex]
-                      ? record[dataIndex].value
-                      : record[dataIndex],
-                    formItemType,
-                    ops,
-                  )
-                : getFieldDecorator(dataIndex, {
-                    rules: recordValidateRules || validateRules || [],
-                  })(
-                    <FormItemType
-                      key={cellKey}
-                      disabled={disabledProps || disabled}
-                      formItemType={formItemType}
-                      options={ops}
-                      {...{
-                        ...omit(restColumnProps, ['value']),
-                        ...omit(restRecordProps, ['value']),
-                      }}
-                    />,
-                  )}
+            <Form.Item
+              style={{ margin: 0 }}
+              key={`form-item-${cellKey}`}
+              name={dataIndex}
+              rules={recordValidateRules || validateRules || []}
+            >
+              {lReadonly ? (
+                this.renderName(
+                  record[dataIndex] && 'value' in record[dataIndex]
+                    ? record[dataIndex].value
+                    : record[dataIndex],
+                  formItemType,
+                  ops,
+                )
+              ) : (
+                <FormItemType
+                  key={cellKey}
+                  disabled={disabledProps || disabled}
+                  formItemType={formItemType}
+                  options={ops}
+                  {...{
+                    ...omit(restColumnProps, ['value']),
+                    ...omit(restRecordProps, ['value']),
+                  }}
+                />
+              )}
             </Form.Item>
           )}
           {suffixElement ? suffixElement(record[dataIndex], record, index) : null}
@@ -215,6 +217,6 @@ export default class EditableCell extends Component {
   };
 
   render() {
-    return <EditableContext.Consumer>{this.renderCell}</EditableContext.Consumer>;
+    return this.renderCell();
   }
 }

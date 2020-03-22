@@ -8,7 +8,7 @@
     "precommit": "lint-staged"
   },
   "dependencies": {
-    "antd": "^3.19.5",
+    "antd": "^4.0.3",
     "react": "^16.8.6",
     "react-dom": "^16.8.6"
   },

@@ -39,6 +39,7 @@
   ],
   "author": "tinghongli",
   "dependencies": {
+    "@ant-design/icons": "^4.0.3",
     "antd": "^4.0.3",
     "classnames": "^2.2.6",
     "lodash-es": "^4.17.15",

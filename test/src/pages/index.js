@@ -19,6 +19,7 @@ class TestPage extends Component {
               value: `${Math.random() * 100}`,
               formItemType: 'INPUT',
               type: 'number',
+              validateRules: [{ required: true, message: '必填' }],
             },
             b: Math.random() * 100,
             c: Math.random() * 100,
@@ -81,8 +82,9 @@ class TestPage extends Component {
         />
         <button
           type="button"
-          onClick={() => {
-            this.validateRules.map(v => v());
+          onClick={async () => {
+            const result = await Promise.all(this.validateRules.map(v => v()));
+            console.log(result);
           }}
         >
           校验表单
