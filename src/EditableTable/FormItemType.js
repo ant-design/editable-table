@@ -1,6 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Radio, Select, Input, DatePicker, Cascader, Checkbox, TreeSelect } from 'antd';
+import {
+  Radio,
+  Select,
+  Input,
+  DatePicker,
+  Cascader,
+  Checkbox,
+  TreeSelect,
+  InputNumber,
+} from 'antd';
 
 const FormItemType = ({ disabled, formItemType, options, ...restProps }) => {
   switch (formItemType) {
@@ -19,9 +28,9 @@ const FormItemType = ({ disabled, formItemType, options, ...restProps }) => {
       return (
         <Select {...restProps}>
           {(options || []).map(({ name, value, disabled, ...restItem }) => (
-            <Option value={value} title={name} disabled={disabled} {...restItem}>
-              {item.name}
-            </Option>
+            <Select.Option value={value} title={name} disabled={disabled} {...restItem}>
+              {name}
+            </Select.Option>
           ))}
         </Select>
       );
@@ -36,14 +45,20 @@ const FormItemType = ({ disabled, formItemType, options, ...restProps }) => {
           label: item.label || item.name,
           children: item.children && item.children.length ? refactor(item.children) : undefined,
         }));
-      return <Cascader options={refactor(options)} disabled={disabled} {...restProps} />;
+      return (
+        <Cascader
+          options={refactor(options)}
+          disabled={disabled}
+          {...restProps}
+        />
+      );
     }
     case 'CHECKBOX': {
       return (
         <Checkbox.Group
           disabled={disabled}
-          options={(options || []).map(({ name, value, ...restItem }) => ({
-            label: name,
+          options={(options || []).map(({ label, name, value, ...restItem }) => ({
+            label: label || name,
             value,
             ...restItem,
           }))}
@@ -61,12 +76,13 @@ const FormItemType = ({ disabled, formItemType, options, ...restProps }) => {
       return <TreeSelect disabled={disabled} treeData={refactor(options)} {...restProps} />;
     }
     case 'TEXTAREA': {
-      <Input.TextArea disabled={disabled} {...restProps} />;
+      return <Input.TextArea disabled={disabled} {...restProps} />;
     }
+    case 'INPUT_NUMBER':
+      return <InputNumber disabled={disabled} {...restProps} />;
     case 'INPUT':
-    default: {
+    default:
       return <Input disabled={disabled} {...restProps} />;
-    }
   }
 };
 
@@ -74,8 +90,9 @@ FormItemType.propTypes = {
   disabled: PropTypes.bool,
   formItemType: PropTypes.oneOf([
     'RADIO',
-    'SINGLE',
+    'SELECT',
     'INPUT',
+    'INPUT_NUMBER',
     'TEXTAREA',
     'DATE_PICKER',
     'CASCADER',

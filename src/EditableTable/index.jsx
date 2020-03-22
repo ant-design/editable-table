@@ -4,11 +4,11 @@ import PropTypes from 'prop-types';
 import { Table, Checkbox, Button } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { debounce } from 'lodash-es';
-import classnames from '../common/classnames';
+import classnames from '../../common/classnames';
 import { ROW_SELECTION, CLASSNAME_PREFIX } from './constant';
 import EditableCell from './EditableCell';
 import EditableFormRow from './EditableFormRow';
-import styles from './EditableTable.less';
+import styles from './index.less';
 
 const cx = classnames(styles, CLASSNAME_PREFIX);
 
@@ -74,7 +74,6 @@ class EditableTable extends Component {
         {
           dataIndex: ROW_SELECTION,
           width: 40,
-          className: cx('table-selection'),
           title: () => {
             const allKeys = [];
             (dataSource || []).forEach((record, index) => {
@@ -149,7 +148,7 @@ class EditableTable extends Component {
               const target = newDataSource[index];
               Object.assign(target, newRecord);
               if (typeof key === 'string') {
-                if (['INPUT', 'TEXTAREA'].includes(formItemType)) {
+                if (['INPUT', 'TEXTAREA','INPUT_NUMBER'].includes(formItemType)) {
                   this.debounceChange(
                     key,
                     value,
@@ -235,8 +234,9 @@ EditableTable.propTypes = {
       render: PropTypes.func,
       formItemType: PropTypes.oneOf([
         'RADIO',
-        'SINGLE',
+        'SELECT',
         'INPUT',
+        'INPUT_NUMBER',
         'TEXTAREA',
         'DATE_PICKER',
         'CASCADER',

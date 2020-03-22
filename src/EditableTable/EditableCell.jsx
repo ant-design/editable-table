@@ -3,13 +3,10 @@ import PropTypes from 'prop-types';
 import { Radio, Checkbox } from 'antd';
 import { omit } from 'lodash-es';
 import { Form } from 'antd';
-import findCascaderPath from '../common/findCascaderPath';
-import classnames from '../common/classnames';
+import getHasValue from './getHasValue';
+import findCascaderPath from '../../common/findCascaderPath';
 import FormItemType from './FormItemType';
-import { ROW_SELECTION, CLASSNAME_PREFIX } from './constant';
-import styles from './EditableTable.less';
-
-const cx = classnames(styles, CLASSNAME_PREFIX);
+import { ROW_SELECTION } from './constant';
 
 export default class EditableCell extends Component {
   static propTypes = {
@@ -24,8 +21,9 @@ export default class EditableCell extends Component {
       readonly: PropTypes.bool,
       formItemType: PropTypes.oneOf([
         'RADIO',
-        'SINGLE',
+        'SELECT',
         'INPUT',
+        'INPUT_NUMBER',
         'TEXTAREA',
         'DATE_PICKER',
         'CASCADER',
@@ -82,7 +80,6 @@ export default class EditableCell extends Component {
       rowKey,
       columnIndex,
       disabled: disabledProps,
-      ...restProps
     } = this.props;
     const cellKey = `${dataIndex}-${columnIndex}-${
       rowKey ? rowKey(record, index) || index : index
@@ -92,7 +89,7 @@ export default class EditableCell extends Component {
         const tdKey = rowKey(record, index);
         const checked = (rowSelection.selectedRowKeys || []).indexOf(tdKey) > -1;
         return (
-          <td className={cx('table-selection')} key={`td-${cellKey}`}>
+          <td key={`td-${cellKey}`}>
             {rowSelection.type === 'radio' ? (
               <Radio
                 key={cellKey}
@@ -190,9 +187,7 @@ export default class EditableCell extends Component {
             >
               {lReadonly ? (
                 this.renderName(
-                  record[dataIndex] && 'value' in record[dataIndex]
-                    ? record[dataIndex].value
-                    : record[dataIndex],
+                  getHasValue(record[dataIndex]) ? record[dataIndex].value : record[dataIndex],
                   formItemType,
                   ops,
                 )
@@ -203,8 +198,8 @@ export default class EditableCell extends Component {
                   formItemType={formItemType}
                   options={ops}
                   {...{
-                    ...omit(restColumnProps, ['value']),
-                    ...omit(restRecordProps, ['value']),
+                    ...omit(restColumnProps, ['value', 'onChange']),
+                    ...omit(restRecordProps, ['value', 'onChange']),
                   }}
                 />
               )}

@@ -1,4 +1,3 @@
-import 'antd/dist/antd.css'; 
-import EditableTable from './EditableTable';
+import 'antd/dist/antd.css';
 
-export default EditableTable;
+export { default } from './EditableTable';

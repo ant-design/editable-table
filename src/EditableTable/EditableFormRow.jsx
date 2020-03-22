@@ -1,9 +1,10 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Form } from 'antd';
+import getHasValue from './getHasValue';
 import { ROW_SELECTION, CLASSNAME_PREFIX } from './constant';
-import classnames from '../common/classnames';
-import styles from './EditableTable.less';
+import classnames from '../../common/classnames';
+import styles from './index.less';
 
 const cx = classnames(styles, CLASSNAME_PREFIX);
 
@@ -17,7 +18,6 @@ const EditableRow = ({
   children,
   onChange,
   columns,
-  ...props
 }) => {
   const rowKeyStr = `${myRowKey ? myRowKey(record, index) || index : index}`;
   const [form] = Form.useForm();
@@ -49,8 +49,7 @@ const EditableRow = ({
     if (!column || column.render) {
       return;
     }
-    const hasValue =
-      record[key] && typeof record[key] === 'object' && 'value' in (record[key] || {});
+    const hasValue = getHasValue(record[key]);
     if (hasValue && record[key] && record[key].render) {
       return;
     }
@@ -71,8 +70,7 @@ const EditableRow = ({
           const key = Object.keys(changedValues)[0];
           const value = changedValues[key];
           const column = columns.find(c => c.dataIndex === key) || {};
-          const hasValue =
-            record[key] && typeof record[key] === 'object' && 'value' in (record[key] || {});
+          const hasValue = getHasValue(record[key]);
           if (hasValue) {
             const newRecord = { ...record };
             if (!newRecord[key]) {
