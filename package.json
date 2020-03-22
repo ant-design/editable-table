@@ -1,0 +1,47 @@
+{
+  "name": "editabletable",
+  "version": "0.0.1",
+  "description": "基于antd的高性能可编辑表单",
+  "main": "dist/index.js",
+  "module": "dist/index.esm.js",
+  "authors": {
+    "name": "tinghong.li",
+    "email": "597653511@qq.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/lth707/EditableTable.git"
+  },
+  "scripts": {
+    "dev": "father doc dev",
+    "build": "father build"
+  },
+  "peerDependencies": {
+    "react": "16.x"
+  },
+  "devDependencies": {
+    "eslint": "^6.8.0",
+    "eslint-config-cool": "^0.3.2",
+    "father": "^2.16.0"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/lth707/EditableTable/issues"
+  },
+  "homepage": "https://github.com/lth707/EditableTable#readme",
+  "directories": {
+    "test": "test"
+  },
+  "keywords": [
+    "editabletable",
+    "form",
+    "validate"
+  ],
+  "author": "tinghongli",
+  "dependencies": {
+    "antd": "^4.0.3",
+    "classnames": "^2.2.6",
+    "lodash-es": "^4.17.15",
+    "prop-types": "^15.7.2"
+  }
+}

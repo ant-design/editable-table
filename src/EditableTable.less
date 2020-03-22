@@ -1,0 +1,51 @@
+@prefix: editable-table;
+.@{prefix}- {
+  &container {
+    .ant-form-item-control.has-error {
+      top: -8px !important;
+    }
+  }
+  &icon {
+    font-size: 16px !important;
+    margin-right: 10px;
+    :last-child {
+      margin-right: 0;
+    }
+  }
+  &table-selection {
+    // text-align: center !important;
+  }
+  &footer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    .@{prefix}-btn-wrap {
+      align-items: center;
+      display: flex;
+      .@{prefix}-plus-btn-icon {
+        cursor: pointer;
+        color: #c6c6c6;
+        font-weight: 700;
+        font-size: 16px;
+        margin-right: 5px;
+      }
+      .@{prefix}-plus-btn {
+        padding: 0;
+        width: auto;
+      }
+    }
+  }
+  &header {
+    font-family: PingFangSC-Medium;
+    font-size: 14px;
+    color: #424242;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    .@{prefix}-header-extra {
+      display: flex;
+      align-items: center;
+    }
+  }
+}
