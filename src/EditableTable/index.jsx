@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Table, Checkbox, Button } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
-import { debounce } from 'lodash-es';
+import { debounce, some } from 'lodash-es';
 import classnames from '../../common/classnames';
 import { ROW_SELECTION, CLASSNAME_PREFIX } from './constant';
 import EditableCell from './EditableCell';
@@ -16,16 +16,13 @@ class EditableTable extends Component {
   constructor() {
     super();
     this.validateFieldFns = [];
-    this.changeFields = {};
+    this.changeFields = { hasError: false };
   }
 
-  validateField = () => {
-    let result = false;
-    this.validateFieldFns.forEach(v => {
-      const r = v();
-      result = result || r;
-    });
-    return result;
+  validateField = async () => {
+    const result = await Promise.all(this.validateFieldFns.map(v => v()));
+    this.changeFields.hasError = false;
+    return some(result);
   };
 
   componentDidMount() {
@@ -148,7 +145,7 @@ class EditableTable extends Component {
               const target = newDataSource[index];
               Object.assign(target, newRecord);
               if (typeof key === 'string') {
-                if (['INPUT', 'TEXTAREA','INPUT_NUMBER'].includes(formItemType)) {
+                if (['INPUT', 'TEXTAREA', 'INPUT_NUMBER'].includes(formItemType)) {
                   this.debounceChange(
                     key,
                     value,

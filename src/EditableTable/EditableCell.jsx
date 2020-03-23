@@ -41,6 +41,7 @@ export default class EditableCell extends Component {
       prefixElement: PropTypes.func,
       suffixElement: PropTypes.func,
       cellClassName: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
+      shouldUpdate: PropTypes.func,
     }),
     rowSelection: PropTypes.shape({
       type: PropTypes.oneOf(['radio', 'checkbox']),
@@ -149,6 +150,7 @@ export default class EditableCell extends Component {
       prefixElement,
       suffixElement,
       cellClassName = '',
+      shouldUpdate: columnShouldUpdate,
       ...restColumnProps
     } = column || {};
     const {
@@ -158,6 +160,7 @@ export default class EditableCell extends Component {
       editable: recordEditable,
       readonly: recordReadonly,
       render: recordRender,
+      shouldUpdate: recordShouldUpdate,
       ...restRecordProps
     } = record[dataIndex] || {};
     const lEditable = recordEditable !== undefined ? recordEditable : editable;
@@ -166,6 +169,7 @@ export default class EditableCell extends Component {
     const renderFn = recordRender || render;
     const formItemType = recordType || columnType || 'INPUT';
     const ops = recordOptions || options;
+    const shouldUpdate = recordShouldUpdate || columnShouldUpdate || ((prevValue, curValue) => prevValue !== curValue);
     return (
       <td key={`td-${cellKey}`}>
         <div
@@ -184,6 +188,7 @@ export default class EditableCell extends Component {
               key={`form-item-${cellKey}`}
               name={dataIndex}
               rules={recordValidateRules || validateRules || []}
+              shouldUpdate={shouldUpdate}
             >
               {lReadonly ? (
                 this.renderName(

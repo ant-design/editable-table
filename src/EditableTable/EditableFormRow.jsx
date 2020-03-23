@@ -28,8 +28,13 @@ const EditableRow = ({
         return false;
       } catch (error) {
         if (error) {
+          if (!changeFields.hasError) {
+            changeFields.hasError = true;
+            form.scrollToField(((form.getFieldsError() || [])[0] || {}).name);
+          }
           return true;
         }
+        return false;
       }
     });
     return () => {
@@ -63,7 +68,6 @@ const EditableRow = ({
     <tr key={rowKeyStr} className={cx('edit-row', className || '')}>
       <Form
         form={form}
-        scrollToFirstError
         component={false}
         fields={fields}
         onValuesChange={(changedValues, allValues) => {
