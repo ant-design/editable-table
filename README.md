@@ -1,6 +1,6 @@
 # [antd-editabletable](https://www.npmjs.com/package/antd-editabletable)
 
-基于antd4.x的高性能可编辑表单（400个表单元素内性能没有太大问题，超过400个表单的界面建议改交互方式），自由的配置table每一个单元格的表单类型，并且支持自定义校验表单。antd3.x版本的暂时不支持。
+基于antd4.x的高性能可编辑table表单（400个表单元素内性能没有太大问题，超过400个表单的界面建议改交互方式），自由的配置table每一个单元格的表单类型，并且支持自定义校验表单。antd3.x版本的暂时不支持。
 
 ## Install
 ```shell

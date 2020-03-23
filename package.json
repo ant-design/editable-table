@@ -1,7 +1,7 @@
 {
   "name": "antd-editabletable",
-  "version": "0.0.3",
-  "description": "基于antd的高性能可编辑表单",
+  "version": "0.0.4",
+  "description": "基于antd的高性能可编辑table表单",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
   "authors": {
