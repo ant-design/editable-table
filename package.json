@@ -1,6 +1,6 @@
 {
   "name": "antd-editabletable",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "基于antd的高性能可编辑table表单",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
@@ -10,7 +10,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/lth707/EditableTable.git"
+    "url": "git+ssh://git@github.com:ant-design/editable-table.git"
   },
   "scripts": {
     "dev": "father doc dev",
@@ -28,9 +28,9 @@
   },
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/lth707/EditableTable/issues"
+    "url": "https://github.com/ant-design/editable-table/issues"
   },
-  "homepage": "https://github.com/lth707/EditableTable#readme",
+  "homepage": "https://github.com/ant-design/editable-table",
   "directories": {
     "test": "test"
   },
