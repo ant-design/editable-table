@@ -299,6 +299,9 @@ const getConfig = (formItemType) => {
 4. 性能优化
 columns和dataSource都可以传一个shouldUpdate（默认值：``(prevValue, curValue) => prevValue !== curValue``）的参数用于做性能优化，和antd的Form.Item的效果一样，详见[文档](https://ant.design/components/form-cn/)
 
+## RUN EFFECT
+![image](https://github.com/ant-design/editable-table/blob/master/run1.gif)
+![image](https://github.com/ant-design/editable-table/blob/master/run2.gif)
 
 ## LICENSE
 MIT
