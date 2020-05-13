@@ -89,7 +89,7 @@ class TestPage extends Component {
       title: type,
     }));
   };
-  
+
   constructor() {
     super();
     this.state = {

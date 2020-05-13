@@ -97,14 +97,14 @@ export default class EditableCell extends Component {
                 checked={checked}
                 value={tdKey}
                 onChange={e => {
-                  if (!rowSelection.onChange) return;
-                  if (e.target.checked && !checked) {
-                    rowSelection.onChange([...(rowSelection.selectedRowKeys || []), tdKey]);
+                  if (e.target.checked === checked) return;
+                  if (!rowSelection.onChange && !rowSelection.onSelect) return;
+                  const selectedRowKeys = [tdKey];
+                  if (rowSelection.onChange) {
+                    rowSelection.onChange(selectedRowKeys);
                   }
-                  if (!e.target.checked && checked) {
-                    rowSelection.onChange(
-                      (rowSelection.selectedRowKeys || []).filter(k => k !== tdKey),
-                    );
+                  if (rowSelection.onSelect) {
+                    rowSelection.onSelect(record, e.target.checked, selectedRowKeys, e);
                   }
                 }}
                 {...{
@@ -118,14 +118,19 @@ export default class EditableCell extends Component {
                 key={cellKey}
                 checked={checked}
                 onChange={e => {
-                  if (!rowSelection.onChange) return;
+                  if (!rowSelection.onChange && !rowSelection.onSelect) return;
+                  let selectedRowKeys = [];
                   if (e.target.checked && !checked) {
-                    rowSelection.onChange([...(rowSelection.selectedRowKeys || []), tdKey]);
+                    selectedRowKeys = [...(rowSelection.selectedRowKeys || []), tdKey];
                   }
                   if (!e.target.checked && checked) {
-                    rowSelection.onChange(
-                      (rowSelection.selectedRowKeys || []).filter(k => k !== tdKey),
-                    );
+                    selectedRowKeys = (rowSelection.selectedRowKeys || []).filter(k => k !== tdKey);
+                  }
+                  if (rowSelection.onChange) {
+                    rowSelection.onChange(selectedRowKeys);
+                  }
+                  if (rowSelection.onSelect) {
+                    rowSelection.onSelect(record, e.target.checked, selectedRowKeys, e);
                   }
                 }}
                 {...{
@@ -169,7 +174,8 @@ export default class EditableCell extends Component {
     const renderFn = recordRender || render;
     const formItemType = recordType || columnType || 'INPUT';
     const ops = recordOptions || options;
-    const shouldUpdate = recordShouldUpdate || columnShouldUpdate || ((prevValue, curValue) => prevValue !== curValue);
+    const shouldUpdate =
+      recordShouldUpdate || columnShouldUpdate || ((prevValue, curValue) => prevValue !== curValue);
     return (
       <td key={`td-${cellKey}`}>
         <div
