@@ -167,7 +167,7 @@ class EditableTable extends Component {
               }
             },
           })}
-          components={components}
+          components={columns.length > 0 && dataSource.length > 0 ? components : undefined}
           dataSource={dataSource}
           columns={newColumns}
           footer={() =>
