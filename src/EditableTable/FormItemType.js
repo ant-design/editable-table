@@ -15,7 +15,7 @@ const FormItemType = ({ disabled, formItemType, options, ...restProps }) => {
   switch (formItemType) {
     case 'RADIO': {
       return (
-        <Radio.Group {...restProps}>
+        <Radio.Group disabled={disabled} {...restProps}>
           {(options || []).map(({ name, value, ...restItem }) => (
             <Radio value={value} key={value} {...restItem}>
               {name}
@@ -26,7 +26,7 @@ const FormItemType = ({ disabled, formItemType, options, ...restProps }) => {
     }
     case 'SELECT': {
       return (
-        <Select {...restProps}>
+        <Select disabled={disabled} {...restProps}>
           {(options || []).map(({ name, value, disabled, ...restItem }) => (
             <Select.Option value={value} title={name} disabled={disabled} {...restItem}>
               {name}
