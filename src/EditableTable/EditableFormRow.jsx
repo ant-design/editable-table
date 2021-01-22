@@ -58,12 +58,23 @@ const EditableRow = ({
     if (hasValue && record[key] && record[key].render) {
       return;
     }
+    const target = (changeFields[trKey] || []).find(item => {
+      if ((item.name || []).includes(key)) {
+        return true;
+      }
+      return false;
+    });
+    const v = hasValue ? record[key].value : record[key];
+    if (target) {
+      target.value = v;
+    }
     fields.push({
-      ...(changeFields[trKey] || {})[key],
+      ...target,
       name: key,
-      value: hasValue ? record[key].value : record[key],
+      value: v,
     });
   });
+  console.log(fields);
   return (
     <tr key={rowKeyStr} className={cx('edit-row', className || '')}>
       <Form
@@ -97,12 +108,8 @@ const EditableRow = ({
           }
         }}
         onFieldsChange={(props, _changeFields) => {
-          const key = myRowKey ? myRowKey(record, index) || index : index;
           Object.assign(changeFields, {
-            [key]: {
-              ...changeFields[key],
-              ..._changeFields,
-            },
+            [trKey]: _changeFields,
           });
         }}
       >
