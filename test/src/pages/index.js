@@ -148,8 +148,7 @@ class TestPage extends Component {
         <button
           type="button"
           onClick={async () => {
-            const result = await Promise.all(this.validateRules.map(v => v()));
-            console.log(result);
+            await Promise.all(this.validateRules.map(v => v()));
           }}
         >
           校验表单

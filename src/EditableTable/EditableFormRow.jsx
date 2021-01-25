@@ -74,7 +74,6 @@ const EditableRow = ({
       value: v,
     });
   });
-  console.log(fields);
   return (
     <tr key={rowKeyStr} className={cx('edit-row', className || '')}>
       <Form
