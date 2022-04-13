@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { Form } from 'antd';
 import getHasValue from './getHasValue';
@@ -13,42 +13,46 @@ const EditableRow = ({
   myRowKey,
   index,
   validateFieldFns,
-  changeFields,
   className,
   children,
   onChange,
   columns,
+  ...props
 }) => {
+  const formRef = useRef({});
   const rowKeyStr = `${myRowKey ? myRowKey(record, index) || index : index}`;
-  const [form] = Form.useForm();
   useEffect(() => {
-    validateFieldFns.push(async () => {
+    const validataFn = async () => {
+      let hasError = false;
       try {
-        await form.validateFields();
-        return false;
-      } catch (error) {
-        if (error) {
-          if (!changeFields.hasError) {
-            changeFields.hasError = true;
-            form.scrollToField(((form.getFieldsError() || [])[0] || {}).name);
-          }
-          return true;
+        if (formRef && formRef.current && formRef.current.validateFields) {
+          await formRef.current.validateFields();
         }
-        return false;
+      } catch (error) {
+        const firstField = ((((error || {}).errorFields || [])[0] || {}).name || [])[0];
+        if (firstField) {
+          if (formRef && formRef.current && formRef.current.submit) {
+            formRef.current.submit();
+          }
+          hasError = true;
+        }
       }
-    });
+      return hasError;
+    };
+    validateFieldFns.push(validataFn);
     return () => {
-      // eslint-disable-next-line no-param-reassign
-      delete changeFields[rowKeyStr];
+      validateFieldFns.splice(
+        validateFieldFns.findIndex((v) => v === validataFn),
+        1,
+      );
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  const trKey = myRowKey ? myRowKey(record, index) || index : index;
   const fields = [];
   const columMap = columns.reduce((reuslt, current) => {
     return { ...reuslt, [current.dataIndex]: current };
   }, {});
-  Object.keys(record || {}).forEach(key => {
+  Object.keys(record || {}).forEach((key) => {
     if (key === ROW_SELECTION) return;
     const column = columMap[key];
     if (!column || column.render) {
@@ -58,32 +62,22 @@ const EditableRow = ({
     if (hasValue && record[key] && record[key].render) {
       return;
     }
-    const target = (changeFields[trKey] || []).find(item => {
-      if ((item.name || []).includes(key)) {
-        return true;
-      }
-      return false;
-    });
-    const v = hasValue ? record[key].value : record[key];
-    if (target) {
-      target.value = v;
-    }
     fields.push({
-      ...target,
       name: key,
-      value: v,
+      value: hasValue ? record[key].value : record[key],
     });
   });
   return (
-    <tr key={rowKeyStr} className={cx('edit-row', className || '')}>
+    <tr {...props} key={rowKeyStr} className={cx('edit-row', className || '')}>
       <Form
-        form={form}
-        component={false}
+        ref={formRef}
         fields={fields}
+        component={false}
+        scrollToFirstError
         onValuesChange={(changedValues, allValues) => {
           const key = Object.keys(changedValues)[0];
           const value = changedValues[key];
-          const column = columns.find(c => c.dataIndex === key) || {};
+          const column = columns.find((c) => c.dataIndex === key) || {};
           const hasValue = getHasValue(record[key]);
           if (hasValue) {
             const newRecord = { ...record };
@@ -106,11 +100,6 @@ const EditableRow = ({
             );
           }
         }}
-        onFieldsChange={(props, _changeFields) => {
-          Object.assign(changeFields, {
-            [trKey]: _changeFields,
-          });
-        }}
       >
         {children}
       </Form>
@@ -123,7 +112,9 @@ EditableRow.propTypes = {
   index: PropTypes.number,
   myRowKey: PropTypes.func,
   className: PropTypes.string,
-  changeFields: PropTypes.shape({}),
+  onChange: PropTypes.func,
+  columns: PropTypes.arrayOf(PropTypes.shape({})),
+  children: PropTypes.node,
 };
 
 export default EditableRow;

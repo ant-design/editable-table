@@ -16,12 +16,10 @@ class EditableTable extends Component {
   constructor() {
     super();
     this.validateFieldFns = [];
-    this.changeFields = { hasError: false };
   }
 
   validateField = async () => {
     const result = await Promise.all(this.validateFieldFns.map(v => v()));
-    this.changeFields.hasError = false;
     return some(result);
   };
 
@@ -32,9 +30,6 @@ class EditableTable extends Component {
     }
   }
 
-  componentWillUnmount() {
-    this.changeFields = {};
-  }
 
   debounceChange = debounce((key, value, newRecord, newDataSource, index, rowKey) => {
     const { onChange } = this.props;
@@ -137,7 +132,6 @@ class EditableTable extends Component {
             myRowKey: rowKey, //必须改名，才能把rowKey传进去
             columns: newColumns,
             index,
-            changeFields: this.changeFields,
             validateFieldFns: this.validateFieldFns,
             className: rowClassName && rowClassName(record, index),
             onChange: (key, value, newRecord, formItemType) => {

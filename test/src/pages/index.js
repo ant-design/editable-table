@@ -97,7 +97,7 @@ class TestPage extends Component {
       selectedRowKeys: [],
       dataSource: (() => {
         const ds = [];
-        for (let index = 0; index < 100; index += 1) {
+        for (let index = 0; index < 10; index += 1) {
           ds.push(this.getNewRecord(`${index + 1}`));
         }
         return ds;
